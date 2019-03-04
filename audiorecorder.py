@@ -1,3 +1,5 @@
+# stole this off: https://gist.github.com/sloria/5693955
+
 import pyaudio
 import wave
 
