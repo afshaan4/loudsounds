@@ -1,4 +1,6 @@
 # stole this off: https://gist.github.com/sloria/5693955
+# loud.py imports this then just uses it as a library
+# to save recorded audio
 
 import pyaudio
 import wave

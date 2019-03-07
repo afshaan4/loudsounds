@@ -78,6 +78,8 @@ class loudTester(object):
     def __init__(self):
         self.pa = pyaudio.PyAudio()
         self.stream = self.start_recording()
+        self.rec = audiorecorder.Recorder()
+        self.recfile = rec.open(args.filename, 'wb')
         self.tap_threshold = args.sensitivity
         self.noisycount = args.noise_length+1 
         self.quietcount = 0 
@@ -132,6 +134,7 @@ class loudTester(object):
         if amplitude > self.tap_threshold:
             # noisy block, start saving
             self.soundDetected()
+            self.recfile.start_recording()
             self.quietcount = 0
             self.noisycount += 1
             if self.noisycount > OVERSENSITIVE:
@@ -141,6 +144,7 @@ class loudTester(object):
             # quiet block, stop saving
             if 1 <= self.noisycount <= args.noise_length:
                 self.soundEnded()
+                self.recfile.start_recording()
             self.noisycount = 0
             self.quietcount += 1
             if self.quietcount > UNDERSENSITIVE:
