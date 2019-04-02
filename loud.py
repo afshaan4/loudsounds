@@ -117,10 +117,10 @@ class loudTester(object):
         return stream
 
     def soundDetected(self):
-        print("YEET!+++++++++++++++++++")
+        print("YEET!++++++++++++++++++")
 
     def soundEnded(self):
-        print("NO U-------------------")
+        print("NO U------------------")
 
     def listen(self):
         try:
