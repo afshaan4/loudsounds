@@ -92,6 +92,9 @@ class loudTester(object):
             devinfo = self.pa.get_device_info_by_index(i)   
             print( "Device %d: %s"%(i,devinfo["name"]) )
 
+            # this stuff might change so if you get stupid
+            # device not found issues, add a word from
+            # your devices name in here(in lower case)
             for keyword in ["mic", "input", "usb"]:
                 if keyword in devinfo["name"].lower():
                     print("Found an input: device %d - %s"%(i,devinfo["name"]))
