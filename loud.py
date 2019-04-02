@@ -10,7 +10,7 @@ import pyaudio
 import struct
 import math
 
-# i know this is messy, some global vars here, some in the class
+# I know this is messy, some global vars here, some in the class
 # fix it if ya want to
 RATE = 44100  
 INPUT_BLOCK_TIME = 0.05
