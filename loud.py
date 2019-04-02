@@ -137,7 +137,7 @@ class loudTester(object):
         if amplitude > self.tap_threshold:
             # noisy block, start saving
             self.soundDetected()
-            # TODO uncomment this
+            # start recording
             self.recfile.start_recording()
             self.quietcount = 0
             self.noisycount += 1
@@ -148,7 +148,7 @@ class loudTester(object):
             # quiet block, stop saving
             if 1 <= self.noisycount <= args.noise_length:
                 self.soundEnded()
-                # TODO uncomment this
+                # stop recording
                 self.recfile.stop_recording()
             self.noisycount = 0
             self.quietcount += 1

@@ -7,6 +7,11 @@ a minimum of like 10 to 20 seconds even if the sound stops
 ### notes to future self:
 so future me knows what past me was thinking
 
+* move the save stuff to `soundDetected()` and `soundEnded()`
+  and have those only trigger on sound start and sound end,
+  this might be problematic tho since then the save delay would hold
+  up `soundEnded()`
+
 * the save stuff works finally, but it still has the issue below
 
 * `start_recording` will be called continuously
