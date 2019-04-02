@@ -47,7 +47,7 @@ if args.filename is None:
     args.filename = ('yeet' + date + time + '.wav') 
     print(args.filename)
 if args.noise_length:
-    # lenght/blocksize, kinda like sizeof(array) / sizeof(array[0])
+    # length/blocksize, kinda like len(array) / len(array[0])
     args.noise_length = args.noise_length/INPUT_BLOCK_TIME
 
 
@@ -79,19 +79,20 @@ class loudTester(object):
         self.pa = pyaudio.PyAudio()
         self.stream = self.start_recording()
         self.rec = audiorecorder.Recorder()
-        self.recfile = rec.open(args.filename, 'wb')
+        # TODO uncomment this
+        #self.recfile = rec.open(args.filename, 'wb')
         self.tap_threshold = args.sensitivity
         self.noisycount = args.noise_length+1 
         self.quietcount = 0 
         self.errorcount = 0
 
     def find_input_device(self):
-        device_index = None            
+        device_index = None
         for i in range( self.pa.get_device_count() ):     
             devinfo = self.pa.get_device_info_by_index(i)   
             print( "Device %d: %s"%(i,devinfo["name"]) )
 
-            for keyword in ["mic","input"]:
+            for keyword in ["mic", "input", "usb"]:
                 if keyword in devinfo["name"].lower():
                     print("Found an input: device %d - %s"%(i,devinfo["name"]))
                     device_index = i
@@ -134,7 +135,8 @@ class loudTester(object):
         if amplitude > self.tap_threshold:
             # noisy block, start saving
             self.soundDetected()
-            self.recfile.start_recording()
+            # TODO uncomment this
+            #self.recfile.start_recording()
             self.quietcount = 0
             self.noisycount += 1
             if self.noisycount > OVERSENSITIVE:
@@ -144,7 +146,8 @@ class loudTester(object):
             # quiet block, stop saving
             if 1 <= self.noisycount <= args.noise_length:
                 self.soundEnded()
-                self.recfile.start_recording()
+                # TODO uncomment this
+                #self.recfile.start_recording()
             self.noisycount = 0
             self.quietcount += 1
             if self.quietcount > UNDERSENSITIVE:
@@ -155,5 +158,5 @@ class loudTester(object):
 if __name__ == "__main__":
     lt = loudTester()
 
-    for i in range(1000):
+    while True:
         lt.listen()
