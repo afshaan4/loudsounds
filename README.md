@@ -7,7 +7,7 @@ a minimum of like 10 to 20 seconds even if the sound stops
 ### notes to future self:
 so future me knows what past me was thinking
 
-* added some saving logic to the main file, prolly wont work
+* the save stuff works finally, but it still has the issue below
 
 * `start_recording` will be called continuously
 while a loud noise plays, so I'll have check for state changes

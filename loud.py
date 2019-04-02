@@ -149,7 +149,7 @@ class loudTester(object):
             if 1 <= self.noisycount <= args.noise_length:
                 self.soundEnded()
                 # TODO uncomment this
-                self.recfile.start_recording()
+                self.recfile.stop_recording()
             self.noisycount = 0
             self.quietcount += 1
             if self.quietcount > UNDERSENSITIVE:
