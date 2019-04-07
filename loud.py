@@ -29,16 +29,17 @@ parser.add_argument(
     '-l', '--noise-length', type = int, default = 2/INPUT_BLOCK_TIME,
     help = 'max length of noise threshold, anything longer is ignored')
 parser.add_argument(
-    '-s', '--sensitivity', type = float, default = 0.010,
-    help = 'sensitivity threshold, default is 0.010')
+    '-s', '--sensitivity', type = float, default = 0.020,
+    help = 'sensitivity threshold, default is 0.020')
 parser.add_argument(
-    '-c', '--channels', type = int, default = 2,
+    '-c', '--channels', type = int, default = 1,
     help = 'number of input channels')
 parser.add_argument(
     'filename', nargs = '?', metavar = 'FILENAME',
     help = 'name of file to save recording in')
 args = parser.parse_args()
 
+# handle naming the file
 if args.filename is None:
     cut = str(datetime.datetime.now())
     cut = cut.split()

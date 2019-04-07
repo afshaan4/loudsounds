@@ -7,16 +7,20 @@ a minimum of like 10 to 20 seconds even if the sound stops
 ### notes to future self:
 so future me knows what past me was thinking
 
+* it only opens one file per run, i want one file per detected
+  loud noise, so we gotta do this `self.rec.open(args.filename, 'wb')`
+  each time a noise is heard.
+
 * move the save stuff to `soundDetected()` and `soundEnded()`
   and have those only trigger on sound start and sound end,
   this might be problematic tho since then the save delay would hold
   up `soundEnded()`
 
-* the save stuff works finally, but it still has the issue below
+* the save stuff works finally, but it saves a file with no sound in it
 
-* `start_recording` will be called continuously
-while a loud noise plays, so I'll have check for state changes
-from quite to loud then trigger `start_recording` and `stop_recording`
+* the above happens since `start_recording` will be called continuously
+  while a loud noise plays, so I'll have check for state changes
+  from quite to loud then trigger `start_recording` and `stop_recording`
 
 
 ## Documentation:
