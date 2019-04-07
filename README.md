@@ -7,6 +7,8 @@ a minimum of like 10 to 20 seconds even if the sound stops
 ### notes to future self:
 so future me knows what past me was thinking
 
+* pass `device_index` to audiorecorder 
+
 * it only opens one file per run, i want one file per detected
   loud noise, so we gotta do this `self.rec.open(args.filename, 'wb')`
   each time a noise is heard.
@@ -16,11 +18,9 @@ so future me knows what past me was thinking
   this might be problematic tho since then the save delay would hold
   up `soundEnded()`
 
-* the save stuff works finally, but it saves a file with no sound in it
-
-* the above happens since `start_recording` will be called continuously
+* `start_recording` will be called continuously
   while a loud noise plays, so I'll have check for state changes
-  from quite to loud then trigger `start_recording` and `stop_recording`
+  from quiet to loud then trigger `start_recording` and `stop_recording`
 
 
 ## Documentation:

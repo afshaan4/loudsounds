@@ -37,12 +37,37 @@ class RecordingFile(object):
     def __exit__(self, exception, value, traceback):
         self.close()
 
+
+    # finds the mic
+    def find_input_device(self):
+        device_index = None
+        for i in range( self._pa.get_device_count() ):     
+            devinfo = self._pa.get_device_info_by_index(i)   
+            print( "Device %d: %s"%(i,devinfo["name"]) )
+
+            # this stuff might change so if you get stupid
+            # device not found issues, add a word from
+            # your devices name in here(in lower case)
+            for keyword in ["mic", "input", "usb"]:
+                if keyword in devinfo["name"].lower():
+                    print("Found an input: device %d - %s"%(i,devinfo["name"]))
+                    device_index = i
+                    return device_index
+
+        if device_index == None:
+            print( "No preferred input found; using default input device." )
+
+        return device_index
+
     def start_recording(self):
+        device_index = self.find_input_device()
+
         # Use a stream with a callback in non-blocking mode
         self._stream = self._pa.open(format=pyaudio.paInt16,
                                         channels=self.channels,
                                         rate=self.rate,
                                         input=True,
+                                        input_device_index = device_index,
                                         frames_per_buffer=self.frames_per_buffer,
                                         stream_callback=self.get_callback())
         self._stream.start_stream()

@@ -79,13 +79,14 @@ class loudTester(object):
     def __init__(self):
         self.pa = pyaudio.PyAudio()
         self.stream = self.start_recording()
-        self.rec = audiorecorder.Recorder(channels = 2)
+        self.rec = audiorecorder.Recorder(channels = 1)
         self.recfile = self.rec.open(args.filename, 'wb')
         self.tap_threshold = args.sensitivity
         self.noisycount = args.noise_length+1 
         self.quietcount = 0 
         self.errorcount = 0
 
+    # finds the mic
     def find_input_device(self):
         device_index = None
         for i in range( self.pa.get_device_count() ):     
