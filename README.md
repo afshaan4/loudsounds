@@ -7,11 +7,13 @@ a minimum of like 10 to 20 seconds even if the sound stops
 ### notes to future self:
 so future me knows what past me was thinking
 
-* pass `device_index` to audiorecorder 
+* we have the problem of having two 
+  instances of pyaudio active at the same time
+  put everything in the same file?
+  record on a separate thread?
+  only use one instance of pyaudio across both files?
 
-* it only opens one file per run, i want one file per detected
-  loud noise, so we gotta do this `self.rec.open(args.filename, 'wb')`
-  each time a noise is heard.
+* pass `device_index` to audiorecorder 
 
 * move the save stuff to `soundDetected()` and `soundEnded()`
   and have those only trigger on sound start and sound end,
@@ -21,6 +23,10 @@ so future me knows what past me was thinking
 * `start_recording` will be called continuously
   while a loud noise plays, so I'll have check for state changes
   from quiet to loud then trigger `start_recording` and `stop_recording`
+
+* it only opens one file per run, i want one file per detected
+  loud noise, so we gotta do this `self.rec.open(args.filename, 'wb')`
+  each time a noise is heard.
 
 
 ## Documentation:
