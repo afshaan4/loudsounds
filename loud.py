@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 
-# stolen from here: https://stackoverflow.com/questions/4160175/detect-tap-with-pyaudio-from-live-mic
-# modified to listen for loud stuff in general instead of just taps
+# listens for loud sounds from a mic and saves a 15 second clip of the sound.
+
+# sound detection based off:
+# https://stackoverflow.com/questions/4160175/detect-tap-with-pyaudio-from-live-mic
+
 
 import datetime
 import argparse
@@ -75,7 +78,7 @@ class loudTester(object):
             print("Device %d: %s"%(i,devinfo["name"]))
 
             # this stuff might change so if you get stupid
-            # device not found issues, add a word from
+            # "device not found" issues, add a word from
             # your devices name in here(in lower case)
             for keyword in ["mic", "input", "usb"]:
                 if keyword in devinfo["name"].lower():
@@ -123,6 +126,7 @@ class loudTester(object):
 
     # reads from the stream and writes to the file
     def record(self, duration):
+        print("recording...")
         for _ in range(int(RATE / INPUT_FRAMES_PER_BLOCK * duration)):
             audio = self.stream.read(INPUT_FRAMES_PER_BLOCK)
             self.wavefile.writeframes(audio)
@@ -161,6 +165,7 @@ class loudTester(object):
             self.soundDetected()
             self.quietcount = 0
             self.noisycount += 1
+            # if it's been noisy for 15 seconds
             if self.noisycount > OVERSENSITIVE:
                 # turn down the sensitivity
                 self.tap_threshold *= 1.1

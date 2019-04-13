@@ -1,29 +1,10 @@
 # loudsounds
-listens for loud sounds and records them
+Script that listens for loud sounds and records them.
 
-add a delay so when a sound is heard it records
-a minimum of like 10 to 20 seconds even if the sound stops
+The idea is to put this on a pi and have it run overnight so I can finally
+know how many drag races happen overnight.
 
-### notes to future self:
-so future me knows what past me was thinking
-
-* we have the problem of having two 
-  instances of pyaudio active at the same time:
-  use arecord to record?
-  put everything in the same file?
-  record on a separate thread?
-  only use one instance of pyaudio across both files?
-
-* pass `device_index` to audiorecorder or arecord
-
-* move the save stuff to `soundDetected()` and `soundEnded()`
-  and have those only trigger on sound start and sound end,
-  this might be problematic tho since then the save delay would hold
-  up `soundEnded()`
-
-* `start_recording` will be called continuously
-  while a loud noise plays, so I'll have check for state changes
-  from quiet to loud then trigger `start_recording` and `stop_recording`
+### TODO:
 
 * it only opens one file per run, i want one file per detected
   loud noise, so we gotta do this `self.rec.open(args.filename, 'wb')`
@@ -31,7 +12,7 @@ so future me knows what past me was thinking
 
 
 ## Documentation:
-an attempt at documenting what i write
+An attempt at documenting what I write
 
 **`find_input_device()`**
 
@@ -42,13 +23,13 @@ try adding keywords form the devices name in the list here:
 `for keyword in ["mic", "input", "usb"]:`
 
 
-**sensitivity**
-
-If a noise lasts 15 seconds or more `tap_threshold` gets multiplied by 1.1
-If there is a 15 minute quiet stretch `tap_threshold` gets multiplied by 0.9
-
-
 **`record()`**
 
 reads from the stream (`stream.read`) for `duration` seconds, and writes 
 whatever the stream returns to `wavefile`
+
+
+**sensitivity**
+
+If a noise lasts 15 seconds or more `tap_threshold` gets multiplied by 1.1
+If there is a 15 minute quiet stretch `tap_threshold` gets multiplied by 0.9
