@@ -46,3 +46,9 @@ try adding keywords form the devices name in the list here:
 
 If a noise lasts 15 seconds or more `tap_threshold` gets multiplied by 1.1
 If there is a 15 minute quiet stretch `tap_threshold` gets multiplied by 0.9
+
+
+**`record()`**
+
+reads from the stream (`stream.read`) for `duration` seconds, and writes 
+whatever the stream returns to `wavefile`

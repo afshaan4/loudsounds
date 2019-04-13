@@ -35,6 +35,9 @@ parser.add_argument(
     '-c', '--channels', type = int, default = 1,
     help = 'number of input channels')
 parser.add_argument(
+    '-w', '--record-length', type = float, default = 15.0,
+    help = 'length of noise to save')
+parser.add_argument(
     'filename', nargs = '?', metavar = 'FILENAME',
     help = 'name of file to save recording in')
 args = parser.parse_args()
@@ -126,11 +129,11 @@ class loudTester(object):
 
     def soundDetected(self):
         print("YEET!++++++++++++++++++")
-        self.record(15.0)
+        # record for n seconds
+        self.record(args.record_length)
 
     def soundEnded(self):
         print("NO U------------------")
-
 
     def _prepare_file(self, fname, mode='wb'):
         wavefile = wave.open(fname, mode)
