@@ -8,12 +8,13 @@ a minimum of like 10 to 20 seconds even if the sound stops
 so future me knows what past me was thinking
 
 * we have the problem of having two 
-  instances of pyaudio active at the same time
+  instances of pyaudio active at the same time:
+  use arecord to record?
   put everything in the same file?
   record on a separate thread?
   only use one instance of pyaudio across both files?
 
-* pass `device_index` to audiorecorder 
+* pass `device_index` to audiorecorder or arecord
 
 * move the save stuff to `soundDetected()` and `soundEnded()`
   and have those only trigger on sound start and sound end,
@@ -39,3 +40,9 @@ name of the device, if the name has the word *mic* or *input* or *usb* in it
 it'll select that device, so if you get stupid `device not found` errors
 try adding keywords form the devices name in the list here: 
 `for keyword in ["mic", "input", "usb"]:`
+
+
+**sensitivity**
+
+If a noise lasts 15 seconds or more `tap_threshold` gets multiplied by 1.1
+If there is a 15 minute quiet stretch `tap_threshold` gets multiplied by 0.9

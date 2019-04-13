@@ -52,7 +52,7 @@ if args.noise_length:
     args.noise_length = args.noise_length/INPUT_BLOCK_TIME
 
 
-def get_rms( block ):
+def get_rms(block):
     # RMS amplitude is defined as the square root of the 
     # mean over time of the square of the amplitude.
     # so we need to convert this string of bytes into 
@@ -62,7 +62,7 @@ def get_rms( block ):
     # two chars in the string.
     count = len(block)/2
     format = "%dh"%(count)
-    shorts = struct.unpack( format, block )
+    shorts = struct.unpack(format, block)
 
     # iterate over the block.
     sum_squares = 0.0
@@ -72,7 +72,7 @@ def get_rms( block ):
         n = sample * SHORT_NORMALIZE
         sum_squares += n*n
 
-    return math.sqrt( sum_squares / count )
+    return math.sqrt(sum_squares / count)
 
 
 class loudTester(object):
@@ -89,9 +89,9 @@ class loudTester(object):
     # finds the mic
     def find_input_device(self):
         device_index = None
-        for i in range( self.pa.get_device_count() ):     
+        for i in range(self.pa.get_device_count()):     
             devinfo = self.pa.get_device_info_by_index(i)   
-            print( "Device %d: %s"%(i,devinfo["name"]) )
+            print("Device %d: %s"%(i,devinfo["name"]))
 
             # this stuff might change so if you get stupid
             # device not found issues, add a word from
@@ -103,11 +103,11 @@ class loudTester(object):
                     return device_index
 
         if device_index == None:
-            print( "No preferred input found; using default input device." )
+            print("No preferred input found; using default input device.")
 
         return device_index
 
-    def start_recording( self ):
+    def start_recording(self):
         device_index = self.find_input_device()
 
         stream = self.pa.open(  format = FORMAT,
@@ -120,27 +120,30 @@ class loudTester(object):
 
     def soundDetected(self):
         print("YEET!++++++++++++++++++")
+        #self.recfile.start_recording()
 
     def soundEnded(self):
+        #self.recfile.stop_recording()
         print("NO U------------------")
 
+
+    # listens for the noises, and records em when they happen
+    # also adjusts sensitivity when there is continuous noise
     def listen(self):
         try:
             block = self.stream.read(INPUT_FRAMES_PER_BLOCK)
         except IOError as e:
             # dammit. 
             self.errorcount += 1
-            print( "(%d) Error recording: %s"%(self.errorcount,e) )
+            print("(%d) Error recording: %s"%(self.errorcount,e))
             self.noisycount = 1
             return
 
-        amplitude = get_rms( block )
+        amplitude = get_rms(block)
         print(amplitude)
         if amplitude > self.tap_threshold:
             # noisy block, start saving
             self.soundDetected()
-            # start recording
-            self.recfile.start_recording()
             self.quietcount = 0
             self.noisycount += 1
             if self.noisycount > OVERSENSITIVE:
@@ -150,10 +153,10 @@ class loudTester(object):
             # quiet block, stop saving
             if 1 <= self.noisycount <= args.noise_length:
                 self.soundEnded()
-                # stop recording
-                self.recfile.stop_recording()
+
             self.noisycount = 0
             self.quietcount += 1
+            # if it's too quiet for too long
             if self.quietcount > UNDERSENSITIVE:
                 # turn up the sensitivity
                 self.tap_threshold *= 0.9
