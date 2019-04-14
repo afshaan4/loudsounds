@@ -45,26 +45,33 @@ parser.add_argument(
     help = 'name of file to save recording in')
 args = parser.parse_args()
 
-# handle naming the file
-if args.filename is None:
-    cut = str(datetime.datetime.now())
-    cut = cut.split()
-    date = str(cut[0])
-    time = str(cut[1])
-    args.filename = ('yeet' + date + time + '.wav')
+
 if args.noise_length:
     # length/blocksize, kinda like len(array) / len(array[0])
     args.noise_length = args.noise_length/INPUT_BLOCK_TIME
 
+# handle naming the file
+def get_fname():
+    cut = str(datetime.datetime.now())
+    cut = cut.split()
+    date = str(cut[0])
+    time = str(cut[1])
 
-# all the detecting noises stuff
+    if args.filename is None:
+        fname = ('yeet' + date + "_" + time[0:8] + '.wav')
+    elif args.filename:
+        fname = (args.filename + date + "_" + time[0:8] + '.wav')
+
+    return fname
+
+
 class loudTester(object):
     def __init__(self):
         self.pa = pyaudio.PyAudio()
         self.stream = self.mic_stream()
-        self.fname = args.filename
         self.mode = 'wb' # just so if i wanna make it an argument
-        self.wavefile = self._prepare_file(self.fname, self.mode)
+        self.fname = 0
+        self.wavefile = 0
         self.tap_threshold = args.sensitivity
         self.noisycount = args.noise_length+1 
         self.quietcount = 0 
@@ -131,12 +138,14 @@ class loudTester(object):
             audio = self.stream.read(INPUT_FRAMES_PER_BLOCK)
             self.wavefile.writeframes(audio)
 
-    def soundDetected(self):
+    def sound_detected(self):
         print("YEET!++++++++++++++++++")
         # record for n seconds
+        self.fname = get_fname()
+        self.wavefile = self._prepare_file(self.fname, self.mode)
         self.record(args.record_length)
 
-    def soundEnded(self):
+    def sound_ended(self):
         print("NO U------------------")
 
     def _prepare_file(self, fname, mode='wb'):
@@ -162,7 +171,7 @@ class loudTester(object):
         print(amplitude)
         if amplitude > self.tap_threshold:
             # noisy block, start saving
-            self.soundDetected()
+            self.sound_detected()
             self.quietcount = 0
             self.noisycount += 1
             # if it's been noisy for 15 seconds
@@ -172,7 +181,7 @@ class loudTester(object):
         else:            
             # quiet block, stop saving
             if 1 <= self.noisycount <= args.noise_length:
-                self.soundEnded()
+                self.sound_ended()
 
             self.noisycount = 0
             self.quietcount += 1
