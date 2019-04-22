@@ -176,7 +176,7 @@ class loudTester(object):
             self.noisycount += 1
             # if it's been noisy for 15 seconds
             if self.noisycount > OVERSENSITIVE:
-                # turn down the sensitivity
+                # increase threshold
                 self.tap_threshold *= 1.1
         else:            
             # quiet block, stop saving
@@ -187,8 +187,8 @@ class loudTester(object):
             self.quietcount += 1
             # if it's too quiet for too long
             if self.quietcount > UNDERSENSITIVE:
-                # turn up the sensitivity
-                self.tap_threshold *= 0.9
+                # set threshold back to original
+                self.tap_threshold = args.sensitivity
 
 
 if __name__ == "__main__":
