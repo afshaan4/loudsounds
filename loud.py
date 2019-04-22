@@ -29,9 +29,6 @@ UNDERSENSITIVE = 120.0/INPUT_BLOCK_TIME
 # handles cli arguments
 parser = argparse.ArgumentParser(description = __doc__)
 parser.add_argument(
-    '-l', '--noise-length', type = int, default = 2/INPUT_BLOCK_TIME,
-    help = 'max length of noise threshold, anything longer is ignored')
-parser.add_argument(
     '-s', '--sensitivity', type = float, default = 0.020,
     help = 'sensitivity threshold, default is 0.020')
 parser.add_argument(
@@ -45,10 +42,6 @@ parser.add_argument(
     help = 'name of file to save recording in')
 args = parser.parse_args()
 
-
-if args.noise_length:
-    # length/blocksize, kinda like len(array) / len(array[0])
-    args.noise_length = args.noise_length/INPUT_BLOCK_TIME
 
 # handle naming the file
 def get_fname():
@@ -73,7 +66,7 @@ class loudTester(object):
         self.fname = 0
         self.wavefile = 0
         self.tap_threshold = args.sensitivity
-        self.noisycount = args.noise_length+1 
+        self.noisycount = 1 
         self.quietcount = 0 
         self.errorcount = 0
 
@@ -179,10 +172,7 @@ class loudTester(object):
                 # increase threshold
                 self.tap_threshold *= 1.1
         else:            
-            # quiet block, stop saving
-            if 1 <= self.noisycount <= args.noise_length:
-                self.sound_ended()
-
+            # quiet block
             self.noisycount = 0
             self.quietcount += 1
             # if it's too quiet for too long
