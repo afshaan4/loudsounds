@@ -19,7 +19,7 @@ RATE = 44100
 INPUT_BLOCK_TIME = 0.05
 FORMAT = pyaudio.paInt16 
 SHORT_NORMALIZE = (1.0/32768.0)
-FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
+FRAMES_PER_BLOCK = 1024 #int(RATE*INPUT_BLOCK_TIME)
 # if we get this many noisy blocks in a row, increase the threshold
 OVERSENSITIVE = 15.0/INPUT_BLOCK_TIME                    
 # if we get this many quiet blocks in a row, decrease the threshold
@@ -128,7 +128,8 @@ class loudTester(object):
     def record(self, duration):
         print("recording...")
         for _ in range(int(RATE / FRAMES_PER_BLOCK * duration)):
-            audio = self.stream.read(FRAMES_PER_BLOCK, False)
+            audio = self.stream.read(FRAMES_PER_BLOCK, 
+                exception_on_overflow=False)
             self.wavefile.writeframes(audio)
 
     def sound_detected(self):
@@ -149,7 +150,7 @@ class loudTester(object):
     # also adjusts sensitivity when there is continuous noise
     def listen(self):
         try:
-            block = self.stream.read(FRAMES_PER_BLOCK)
+            block = self.stream.read(FRAMES_PER_BLOCK, exception_on_overflow=False)
         except IOError as e:
             # dammit. 
             self.errorcount += 1
