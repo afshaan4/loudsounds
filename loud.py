@@ -19,7 +19,7 @@ RATE = 44100
 INPUT_BLOCK_TIME = 0.05
 FORMAT = pyaudio.paInt16 
 SHORT_NORMALIZE = (1.0/32768.0)
-INPUT_FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
+FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
 # if we get this many noisy blocks in a row, increase the threshold
 OVERSENSITIVE = 15.0/INPUT_BLOCK_TIME                    
 # if we get this many quiet blocks in a row, decrease the threshold
@@ -35,8 +35,8 @@ parser.add_argument(
     '-c', '--channels', type = int, default = 1,
     help = 'number of input channels')
 parser.add_argument(
-    '-w', '--record-length', type = float, default = 15.0,
-    help = 'length of noise to save')
+    '-l', '--save-length', type = float, default = 15.0,
+    help = 'how long the sound file that is saved should be, in seconds')
 parser.add_argument(
     'filename', nargs = '?', metavar = 'FILENAME',
     help = 'name of file to save recording in')
@@ -65,7 +65,7 @@ class loudTester(object):
         self.mode = 'wb' # just so if i wanna make it an argument
         self.fname = 0
         self.wavefile = 0
-        self.tap_threshold = args.sensitivity
+        self.sound_threshold = args.sensitivity
         self.noisycount = 1 
         self.quietcount = 0 
         self.errorcount = 0
@@ -121,14 +121,14 @@ class loudTester(object):
                                 rate = RATE,
                                 input = True,
                                 input_device_index = device_index,
-                                frames_per_buffer = INPUT_FRAMES_PER_BLOCK)
+                                frames_per_buffer = FRAMES_PER_BLOCK)
         return stream
 
     # reads from the stream and writes to the file
     def record(self, duration):
         print("recording...")
-        for _ in range(int(RATE / INPUT_FRAMES_PER_BLOCK * duration)):
-            audio = self.stream.read(INPUT_FRAMES_PER_BLOCK)
+        for _ in range(int(RATE / FRAMES_PER_BLOCK * duration)):
+            audio = self.stream.read(FRAMES_PER_BLOCK, False)
             self.wavefile.writeframes(audio)
 
     def sound_detected(self):
@@ -136,10 +136,7 @@ class loudTester(object):
         # record for n seconds
         self.fname = get_fname()
         self.wavefile = self._prepare_file(self.fname, self.mode)
-        self.record(args.record_length)
-
-    def sound_ended(self):
-        print("NO U------------------")
+        self.record(args.save_length)
 
     def _prepare_file(self, fname, mode='wb'):
         wavefile = wave.open(fname, mode)
@@ -152,7 +149,7 @@ class loudTester(object):
     # also adjusts sensitivity when there is continuous noise
     def listen(self):
         try:
-            block = self.stream.read(INPUT_FRAMES_PER_BLOCK)
+            block = self.stream.read(FRAMES_PER_BLOCK)
         except IOError as e:
             # dammit. 
             self.errorcount += 1
@@ -162,7 +159,7 @@ class loudTester(object):
 
         amplitude = self.get_rms(block)
         print(amplitude)
-        if amplitude > self.tap_threshold:
+        if amplitude > self.sound_threshold:
             # noisy block, start saving
             self.sound_detected()
             self.quietcount = 0
@@ -170,7 +167,7 @@ class loudTester(object):
             # if it's been noisy for 15 seconds
             if self.noisycount > OVERSENSITIVE:
                 # increase threshold
-                self.tap_threshold *= 1.1
+                self.sound_threshold *= 1.1
         else:            
             # quiet block
             self.noisycount = 0
@@ -178,7 +175,7 @@ class loudTester(object):
             # if it's too quiet for too long
             if self.quietcount > UNDERSENSITIVE:
                 # set threshold back to original
-                self.tap_threshold = args.sensitivity
+                self.sound_threshold = args.sensitivity
 
 
 if __name__ == "__main__":
