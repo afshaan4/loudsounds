@@ -19,7 +19,7 @@ RATE = 44100
 INPUT_BLOCK_TIME = 0.05
 FORMAT = pyaudio.paInt16 
 SHORT_NORMALIZE = (1.0/32768.0)
-FRAMES_PER_BLOCK = 2048 #int(RATE*INPUT_BLOCK_TIME)
+FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
 # if we get this many noisy blocks in a row, increase the threshold
 OVERSENSITIVE = 15.0/INPUT_BLOCK_TIME                    
 # if we get this many quiet blocks in a row, decrease the threshold
@@ -62,7 +62,7 @@ class loudTester(object):
     def __init__(self):
         self.pa = pyaudio.PyAudio()
         self.stream = self.mic_stream()
-        self.mode = 'wb' # just so if i wanna make it an argument
+        self.mode = 'wb' # wavefile mode
         self.fname = 0
         self.wavefile = 0
         self.sound_threshold = args.sensitivity
