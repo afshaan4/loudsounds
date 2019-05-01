@@ -47,6 +47,6 @@ whatever the stream returns to `wavefile`
 
 **sensitivity:**
 
-If a noise lasts 15 seconds or more `tap_threshold` gets multiplied by 1.1
-If there is a 15 minute quiet stretch `tap_threshold` gets set back to its
+If a noise lasts 15 seconds or more `sound_threshold` gets multiplied by 1.1
+If there is a 15 minute quiet stretch `sound_threshold` gets set back to its
 initial value.

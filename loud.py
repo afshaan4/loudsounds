@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-# listens for loud sounds from a mic and saves a 15 second clip of the sound.
-
+# listens for loud sounds from a mic and saves loud noise to timestamped files.
+#
 # sound detection based off:
 # https://stackoverflow.com/questions/4160175/detect-tap-with-pyaudio-from-live-mic
 
