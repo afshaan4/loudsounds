@@ -4,6 +4,8 @@
 #
 # sound detection based off:
 # https://stackoverflow.com/questions/4160175/detect-tap-with-pyaudio-from-live-mic
+#
+#LICENSE: MIT
 
 
 import datetime

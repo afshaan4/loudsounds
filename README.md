@@ -1,5 +1,5 @@
 # loudsounds
-Script that listens for loud sounds and records them.
+Script that listens for loud sounds and records them, uses pyaudio.
 
 The idea is to put this on a pi and have it run overnight so I can finally
 know how many drag races happen overnight.
