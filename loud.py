@@ -136,7 +136,6 @@ class loudTester(object):
 
     def sound_detected(self):
         print("YEET!++++++++++++++++++")
-        # record for n seconds
         self.fname = get_fname()
         self.wavefile = self._prepare_file(self.fname, self.mode)
         self.record(args.save_length)
@@ -154,7 +153,6 @@ class loudTester(object):
         try:
             block = self.stream.read(FRAMES_PER_BLOCK, exception_on_overflow=False)
         except IOError as e:
-            # dammit. 
             self.errorcount += 1
             print("(%d) Error recording: %s"%(self.errorcount,e))
             self.noisycount = 1
@@ -167,17 +165,15 @@ class loudTester(object):
             self.sound_detected()
             self.quietcount = 0
             self.noisycount += 1
-            # if it's been noisy for 15 seconds
+            # if it's been noisy for 15 seconds increase the threshold
             if self.noisycount > OVERSENSITIVE:
-                # increase threshold
                 self.sound_threshold *= 1.1
         else:            
             # quiet block
             self.noisycount = 0
             self.quietcount += 1
-            # if it's too quiet for too long
+            # if it's too quiet for too long reset the threshold the original
             if self.quietcount > UNDERSENSITIVE:
-                # set threshold back to original
                 self.sound_threshold = args.sensitivity
 
 
