@@ -40,7 +40,7 @@ parser.add_argument(
     '-l', '--save-length', type = float, default = 15.0,
     help = 'how long the sound file that is saved should be, in seconds')
 parser.add_argument(
-    'filename', nargs = '?', metavar = 'FILENAME',
+    'filename', nargs = '?', metavar = 'FILENAME', default = 'yeet',
     help = 'name of file to save recording in')
 args = parser.parse_args()
 
@@ -52,12 +52,7 @@ def get_fname():
     date = str(cut[0])
     time = str(cut[1])
 
-    if args.filename is None:
-        fname = ('yeet' + date + "_" + time[0:8] + '.wav')
-    elif args.filename:
-        fname = (args.filename + date + "_" + time[0:8] + '.wav')
-
-    return fname
+    return (args.filename + date + "_" + time[0:8] + '.wav')
 
 
 class loudTester(object):
@@ -65,7 +60,8 @@ class loudTester(object):
         self.pa = pyaudio.PyAudio()
         self.stream = self.mic_stream()
         self.mode = 'wb' # wavefile mode
-        self.fname = 0
+        self.fname = ''
+        self.logfile = ''
         self.wavefile = 0
         self.sound_threshold = args.sensitivity
         self.noisycount = 1
@@ -133,14 +129,10 @@ class loudTester(object):
             audio = self.stream.read(FRAMES_PER_BLOCK,
                 exception_on_overflow=False)
             self.wavefile.writeframes(audio)
+            self.logfile.write(str(self.get_rms(audio)) +
+                ' ' + str(datetime.datetime.now()) + '\n')
 
-    def sound_detected(self):
-        print("YEET!++++++++++++++++++")
-        self.fname = get_fname()
-        self.wavefile = self._prepare_file(self.fname, self.mode)
-        self.record(args.save_length)
-
-    def _prepare_file(self, fname, mode='wb'):
+    def prepare_file(self, fname, mode='wb'):
         wavefile = wave.open(fname, mode)
         wavefile.setnchannels(args.channels)
         wavefile.setsampwidth(self.pa.get_sample_size(FORMAT))
@@ -160,9 +152,13 @@ class loudTester(object):
 
         amplitude = self.get_rms(block)
         print(amplitude)
+        # noisy block, start saving
         if amplitude > self.sound_threshold:
-            # noisy block, start saving
-            self.sound_detected()
+            self.fname = get_fname()
+            self.logfile = open(args.filename + '.txt', 'a')
+            self.wavefile = self.prepare_file(self.fname, self.mode)
+            self.record(args.save_length)
+
             self.quietcount = 0
             self.noisycount += 1
             # if it's been noisy for 15 seconds increase the threshold
