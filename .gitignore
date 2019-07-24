@@ -105,3 +105,4 @@ venv.bak/
 
 # wav files
 *.wav
+*.txt
